@@ -221,7 +221,7 @@ This is an LLM-generated project. If you discover issues or want to contribute i
 
 ### License
 
-See LICENSE file for details.
+This software is released into the public domain under the Unlicense. See LICENSE file for details.
 
 ### Disclaimer
 
