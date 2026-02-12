@@ -81,7 +81,8 @@ func (steamreader *SteamReader) FindAppIDBuildID(AppID string) (buildId string, 
 }
 
 func checkDefaultLibraryPath(steamPath string) (librarypath string, err error) {
-	_, err = os.Open(steamPath + "\\steamapps\\libraryfolders.vdf")
+	// Use Stat instead of opening the file to avoid leaking file handles
+	_, err = os.Stat(steamPath + "\\steamapps\\libraryfolders.vdf")
 	if err != nil {
 		return
 	}
@@ -96,17 +97,20 @@ func (steamreader *SteamReader) GetLibraryVdfMap() *orderedmap.OrderedMap {
 func (steamreader *SteamReader) GetSteamPath() string {
 	if !steamreader.SteamReaderConfig.customSteamPathFinder {
 		pathStrings := strings.Split(steamreader.steamPath, "\\")
+		if len(pathStrings) == 0 {
+			return steamreader.steamPath
+		}
 		rebuiltPathString := strings.ToUpper(pathStrings[0]) + "\\"
-		if pathStrings[1] == "program files (x86)" {
+
+		// Handle "Program Files (x86)" case insensitively
+		if len(pathStrings) > 1 && strings.ToLower(pathStrings[1]) == "program files (x86)" {
 			rebuiltPathString += "Program Files (x86)\\"
 
 			for x, y := range pathStrings {
-				if x == 0 {
-					continue
-				} else if x == 1 {
+				if x == 0 || x == 1 {
 					continue
 				}
-				if y == "steam" {
+				if strings.ToLower(y) == "steam" {
 					rebuiltPathString += "Steam\\"
 				} else {
 					rebuiltPathString += y + "\\"
@@ -117,8 +121,11 @@ func (steamreader *SteamReader) GetSteamPath() string {
 				if x == 0 {
 					continue
 				}
-				rebuiltPathString += y + "\\"
-
+				if strings.ToLower(y) == "steam" {
+					rebuiltPathString += "Steam\\"
+				} else {
+					rebuiltPathString += y + "\\"
+				}
 			}
 
 		}

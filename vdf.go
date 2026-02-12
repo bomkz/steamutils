@@ -30,7 +30,10 @@ func parseString(s string, i int) (string, int, error) {
 	if i >= len(s) {
 		return "", i, errors.New("unterminated string")
 	}
-	return s[start:i], i + 1, nil // skip closing quote
+	// Normalize doubled backslashes (some VDF sources may present escaped backslashes)
+	out := s[start:i]
+	out = strings.ReplaceAll(out, "\\\\", "\\")
+	return out, i + 1, nil // skip closing quote
 }
 
 // parseVDFOrdered recursively parses VDF text starting at position i, storing keys in order.
