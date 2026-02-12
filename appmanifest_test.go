@@ -678,3 +678,5 @@ func BenchmarkGetAllInstalledApps(b *testing.B) {
 		}
 	}
 }
+
+// The code in this file was made by an LLM, use in production is highly discouraged as unexpected results may occur. The code in this file is not vetted for stability or edge cases.
