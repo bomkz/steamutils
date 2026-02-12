@@ -21,6 +21,10 @@ func TestInstalledDepotStruct(t *testing.T) {
 		t.Errorf("Expected DepotID 667971, got %s", depot.DepotID)
 	}
 
+	if depot.Manifest != "809774009354886606" {
+		t.Errorf("Expected Manifest 809774009354886606, got %s", depot.Manifest)
+	}
+
 	if depot.Size != 3488450479 {
 		t.Errorf("Expected Size 3488450479, got %d", depot.Size)
 	}
@@ -37,6 +41,18 @@ func TestInstalledDepotDLC(t *testing.T) {
 		Manifest: "4625979481897414804",
 		Size:     57120063,
 		DLCAppID: "1770480",
+	}
+
+	if depot.DepotID != "1770481" {
+		t.Errorf("Expected DepotID 1770481, got %s", depot.DepotID)
+	}
+
+	if depot.Manifest != "4625979481897414804" {
+		t.Errorf("Expected Manifest 4625979481897414804, got %s", depot.Manifest)
+	}
+
+	if depot.Size != 57120063 {
+		t.Errorf("Expected Size 57120063, got %d", depot.Size)
 	}
 
 	if depot.DLCAppID == "" {
@@ -76,6 +92,34 @@ func TestInstalledAppStruct(t *testing.T) {
 
 	if app.Name != "VTOL VR" {
 		t.Errorf("Expected Name 'VTOL VR', got %s", app.Name)
+	}
+
+	if app.InstallDir != "VTOL VR" {
+		t.Errorf("Expected InstallDir 'VTOL VR', got %s", app.InstallDir)
+	}
+
+	if app.FullPath != "D:\\SteamLibrary\\steamapps\\common\\VTOL VR" {
+		t.Errorf("Expected FullPath 'D:\\SteamLibrary\\steamapps\\common\\VTOL VR', got %s", app.FullPath)
+	}
+
+	if app.BuildID != "20275350" {
+		t.Errorf("Expected BuildID '20275350', got %s", app.BuildID)
+	}
+
+	if app.SizeOnDisk != 3606612198 {
+		t.Errorf("Expected SizeOnDisk 3606612198, got %d", app.SizeOnDisk)
+	}
+
+	if app.LastUpdated != 1766280889 {
+		t.Errorf("Expected LastUpdated 1766280889, got %d", app.LastUpdated)
+	}
+
+	if app.LastPlayed != 0 {
+		t.Errorf("Expected LastPlayed 0, got %d", app.LastPlayed)
+	}
+
+	if app.LibraryPath != "D:\\SteamLibrary" {
+		t.Errorf("Expected LibraryPath 'D:\\SteamLibrary', got %s", app.LibraryPath)
 	}
 
 	if len(app.InstalledDepots) != 1 {
@@ -161,7 +205,7 @@ func createTestManifest(t *testing.T, tempDir string, appID string) string {
 	return tempDir
 }
 
-// createTestManifest creates a test appmanifest file
+// createTestManifestB creates a test appmanifest file
 func createTestManifestB(b *testing.B, tempDir string, appID string) string {
 	manifestContent := `"AppState"
 {
@@ -404,7 +448,7 @@ func TestReadAppManifestCorrupted(t *testing.T) {
 }
 
 // createMockLibraryVdf creates a mock libraryfolders.vdf structure
-func createMockLibraryVdf(t *testing.T, libraryPath string) *orderedmap.OrderedMap {
+func createMockLibraryVdf(_ *testing.T, libraryPath string) *orderedmap.OrderedMap {
 
 	library0 := orderedmap.New()
 	library0.Set("path", libraryPath)
@@ -423,8 +467,8 @@ func createMockLibraryVdf(t *testing.T, libraryPath string) *orderedmap.OrderedM
 	return root
 }
 
-// createMockLibraryVdf creates a mock libraryfolders.vdf structure
-func createMockLibraryVdfB(b *testing.B, libraryPath string) *orderedmap.OrderedMap {
+// createMockLibraryVdfB creates a mock libraryfolders.vdf structure
+func createMockLibraryVdfB(_ *testing.B, libraryPath string) *orderedmap.OrderedMap {
 
 	library0 := orderedmap.New()
 	library0.Set("path", libraryPath)

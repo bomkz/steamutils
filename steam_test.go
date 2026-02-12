@@ -430,8 +430,7 @@ func BenchmarkFindAppIDPath(b *testing.B) {
 		apps.Set("667970", "3606612198")
 
 		library.Set("apps", apps)
-		libFolders := orderedmap.New()
-		libFolders.Set(string(rune(i)), library)
+		libraryFolders.Set(string(rune(i)), library)
 	}
 
 	root := orderedmap.New()

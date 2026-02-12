@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/iancoleman/orderedmap"
-	"golang.org/x/sys/windows/registry"
 )
 
 func NewSteamReader(steamReaderConfig SteamReaderConfig) (steamreader SteamReader, err error) {
@@ -191,44 +190,4 @@ func (steamreader *SteamReader) FindAppIDPath(targetAppID string) (string, error
 	return "", fmt.Errorf("app with appid %s not found in any library", targetAppID)
 }
 
-// Returns Steam username that has autologin enabled
-func GetAutoLoggedInSteamUsername() (string, error) {
-	root := registry.CURRENT_USER
-	keyPath := `Software\Valve\Steam`
-
-	UserName, err := readStringValueWithDefault(root, keyPath, "AutoLoginUser", "")
-
-	return UserName, err
-}
-
-// Finds Steam's Path from Windows Registry
-func GetSteamPath() (string, error) {
-	root := registry.CURRENT_USER
-	keyPath := `Software\Valve\Steam`
-
-	SteamPath, err := readStringValueWithDefault(root, keyPath, "SteamPath", "")
-	if err != nil {
-		return "", err
-	}
-
-	SteamPath = strings.ReplaceAll(SteamPath, "/", "\\")
-	return SteamPath, nil
-}
-
-// ReadStringValueWithDefault reads a string value from the Windows Registry with a default value.
-func readStringValueWithDefault(root registry.Key, keyPath, valueName, defaultValue string) (string, error) {
-	k, err := registry.OpenKey(root, keyPath, registry.QUERY_VALUE)
-	if err != nil {
-		return defaultValue, nil // Return the default value if the key or value doesn't exist
-	}
-	defer k.Close()
-
-	value, _, err := k.GetStringValue(valueName)
-	if err != nil {
-		return defaultValue, nil // Return the default value if the value doesn't exist
-	}
-
-	return value, nil
-}
-
-// The code in this file was made by ChatGPT, and me, use in production is highly discouraged as unexpected results may occur. The code in this file is not vetted for stability or edge cases.
+// The code in this file was made by an LLM, use in production is highly discouraged as unexpected results may occur. The code in this file is not vetted for stability or edge cases.
