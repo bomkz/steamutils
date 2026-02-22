@@ -15,6 +15,8 @@ type SteamReader struct {
 	SteamReaderConfig SteamReaderConfig
 }
 
+var customUser string
+
 // SteamReaderConfig provides configuration options for creating a new SteamReader.
 //
 // LibraryVdfPathFinder and SteamPathFinder allow custom path detection logic.
@@ -46,6 +48,9 @@ type SteamReaderConfig struct {
 	// Applies path separator normalization and case corrections.
 	// Only affects paths from the default SteamPathFinder.
 	FormatSteamPath bool
+
+	// UserName is used for Linux installations only, used to find steamPath
+	UserName string
 }
 
 // InstalledDepot represents a Steam depot (content package) installed for an application.

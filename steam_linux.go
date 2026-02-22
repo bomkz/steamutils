@@ -15,9 +15,15 @@ import (
 // Checks multiple common locations in order of likelihood
 func GetSteamPath() (string, error) {
 	// Get current user
-	currentUser, err := user.Current()
-	if err != nil {
-		return "", fmt.Errorf("failed to get current user: %w", err)
+	var err error
+	var currentUser *user.User
+	if customUser == "" {
+		currentUser, err = user.Current()
+		if err != nil {
+			return "", fmt.Errorf("failed to get current user: %w", err)
+		}
+	} else {
+		currentUser, err = user.Lookup(customUser)
 	}
 
 	// List of common Steam installation paths on Linux (in order of priority)
@@ -124,9 +130,16 @@ func findSteamPathFromRegistry(registryPath string) (string, error) {
 // GetAutoLoggedInSteamUsername returns Steam username on Linux
 // This is less reliable than Windows but attempts to find it
 func GetAutoLoggedInSteamUsername() (string, error) {
-	currentUser, err := user.Current()
-	if err != nil {
-		return "", err
+	// Get current user
+	var err error
+	var currentUser *user.User
+	if customUser == "" {
+		currentUser, err = user.Current()
+		if err != nil {
+			return "", fmt.Errorf("failed to get current user: %w", err)
+		}
+	} else {
+		currentUser, err = user.Lookup(customUser)
 	}
 
 	// Try to read from loginusers.vdf
