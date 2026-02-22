@@ -232,6 +232,7 @@ func (steamreader *SteamReader) FindAppIDPath(targetAppID string) (string, error
 		}
 
 		path := pathVal.(string)
+		origPath := path
 		path += pathSeparator() + "steamapps"
 		directory, err := os.ReadDir(path)
 
@@ -253,7 +254,7 @@ func (steamreader *SteamReader) FindAppIDPath(targetAppID string) (string, error
 			}
 
 			if gameId == targetAppID {
-				return path, nil
+				return origPath, nil
 			}
 		}
 
