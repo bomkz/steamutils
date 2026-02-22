@@ -107,7 +107,7 @@ func (steamreader *SteamReader) FindAppIDBuildID(AppID string) (buildId string, 
 		return
 	}
 
-	f, err := os.ReadFile(dir + "\\steamapps\\appmanifest_" + AppID + ".acf")
+	f, err := os.ReadFile(dir + pathSeparator() + "steamapps" + pathSeparator() + "appmanifest_" + AppID + ".acf")
 	if err != nil {
 		return
 	}
@@ -132,12 +132,12 @@ func (steamreader *SteamReader) FindAppIDBuildID(AppID string) (buildId string, 
 
 func checkDefaultLibraryPath(steamPath string) (librarypath string, err error) {
 	// Use Stat instead of opening the file to avoid leaking file handles
-	_, err = os.Stat(steamPath + "\\steamapps\\libraryfolders.vdf")
+	_, err = os.Stat(steamPath + pathSeparator() + "steamapps" + pathSeparator() + "libraryfolders.vdf")
 	if err != nil {
 		return
 	}
 
-	librarypath = steamPath + "\\steamapps\\libraryfolders.vdf"
+	librarypath = steamPath + pathSeparator() + "steamapps" + pathSeparator() + "libraryfolders.vdf"
 	return
 }
 
@@ -155,24 +155,24 @@ func (steamreader *SteamReader) GetLibraryVdfMap() *orderedmap.OrderedMap {
 // with proper case handling and path separators. Returns the raw path otherwise.
 func (steamreader *SteamReader) GetSteamPath() string {
 	if !steamreader.SteamReaderConfig.customSteamPathFinder {
-		pathStrings := strings.Split(steamreader.steamPath, "\\")
+		pathStrings := strings.Split(steamreader.steamPath, pathSeparator())
 		if len(pathStrings) == 0 {
 			return steamreader.steamPath
 		}
-		rebuiltPathString := strings.ToUpper(pathStrings[0]) + "\\"
+		rebuiltPathString := strings.ToUpper(pathStrings[0]) + "/"
 
 		// Handle "Program Files (x86)" case insensitively
 		if len(pathStrings) > 1 && strings.ToLower(pathStrings[1]) == "program files (x86)" {
-			rebuiltPathString += "Program Files (x86)\\"
+			rebuiltPathString += "Program Files (x86)" + pathSeparator()
 
 			for x, y := range pathStrings {
 				if x == 0 || x == 1 {
 					continue
 				}
 				if strings.ToLower(y) == "steam" {
-					rebuiltPathString += "Steam\\"
+					rebuiltPathString += "Steam" + pathSeparator()
 				} else {
-					rebuiltPathString += y + "\\"
+					rebuiltPathString += y + pathSeparator()
 				}
 			}
 		} else {
@@ -181,9 +181,9 @@ func (steamreader *SteamReader) GetSteamPath() string {
 					continue
 				}
 				if strings.ToLower(y) == "steam" {
-					rebuiltPathString += "Steam\\"
+					rebuiltPathString += "Steam" + pathSeparator()
 				} else {
-					rebuiltPathString += y + "\\"
+					rebuiltPathString += y + pathSeparator()
 				}
 			}
 
