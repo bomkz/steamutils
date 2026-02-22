@@ -160,7 +160,7 @@ func (steamreader *SteamReader) GetSteamPath() string {
 		if len(pathStrings) == 0 {
 			return steamreader.steamPath
 		}
-		rebuiltPathString := strings.ToUpper(pathStrings[0]) + "/"
+		rebuiltPathString := strings.ToUpper(pathStrings[0]) + pathSeparator()
 
 		// Handle "Program Files (x86)" case insensitively
 		if len(pathStrings) > 1 && strings.ToLower(pathStrings[1]) == "program files (x86)" {
