@@ -32,6 +32,7 @@
 package steamutils
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -223,36 +224,39 @@ func (steamreader *SteamReader) FindAppIDPath(targetAppID string) (string, error
 			continue
 		}
 
-		library, ok := libraryVal.(*orderedmap.OrderedMap)
-		if !ok {
-			continue
-		}
+		library := libraryVal.(*orderedmap.OrderedMap)
 
-		appsVal, exists := library.Get("apps")
+		pathVal, exists := library.Get("path")
 		if !exists {
+			return "", errors.New("libraryfolders.vdf: Path value does not exist...")
+		}
+
+		path := pathVal.(string)
+
+		directory, err := os.ReadDir(path)
+
+		if err != nil {
 			continue
 		}
 
-		apps, ok := appsVal.(*orderedmap.OrderedMap)
-		if !ok {
-			continue
-		}
+		for _, x := range directory {
 
-		for _, appKey := range apps.Keys() {
-			if appKey == targetAppID {
-				pathVal, exists := library.Get("path")
-				if !exists {
-					return "", fmt.Errorf("path not found in library %s for app %s", libKey, targetAppID)
-				}
-				pathStr, ok := pathVal.(string)
-				if !ok {
-					return "", fmt.Errorf("library path for library %s is not a string", libKey)
-				}
+			gameId, found := strings.CutPrefix(x.Name(), "appmanifest_")
 
-				pathStr = strings.ReplaceAll(pathStr, "\\\\", "\\")
-				return pathStr, nil
+			if !found {
+				continue
+			}
+
+			gameId, found = strings.CutSuffix(gameId, ".acf")
+			if !found {
+				continue
+			}
+
+			if gameId == targetAppID {
+				return path, nil
 			}
 		}
+
 	}
 
 	return "", fmt.Errorf("app with appid %s not found in any library", targetAppID)
