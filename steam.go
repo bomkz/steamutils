@@ -232,7 +232,7 @@ func (steamreader *SteamReader) FindAppIDPath(targetAppID string) (string, error
 		}
 
 		path := pathVal.(string)
-
+		path += pathSeparator() + "steamapps"
 		directory, err := os.ReadDir(path)
 
 		if err != nil {
